@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Happy Birthday 🎆</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,system-ui;}
+body{
+  height:100vh;
+  background:radial-gradient(circle at bottom,#0b0033,#000);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  overflow:hidden;
+  color:#fff;
+}
+.card{
+  z-index:2;
+  text-align:center;
+  padding:25px;
+  width:90%;
+  max-width:360px;
+  background:rgba(255,255,255,.08);
+  border-radius:22px;
+  backdrop-filter:blur(14px);
+  box-shadow:0 20px 50px rgba(0,0,0,.6);
+}
+.photo{
+  width:120px;
+  height:120px;
+  margin:auto;
+  border-radius:50%;
+  border:4px solid #ff6f91;
+
+  /* 👇 YAHAN APNI PHOTO FILE KA NAAM DALO */
+  background:url("birthday.jpg") center/cover no-repeat;
+}
+h1{
+  margin-top:15px;
+  font-size:2rem;
+  color:#ff6f91;
+}
+#msg{
+  margin-top:10px;
+  min-height:50px;
+  font-size:1rem;
+  opacity:.9;
+}
+.play-btn{
+  margin-top:15px;
+  padding:10px 22px;
+  border:none;
+  border-radius:25px;
+  background:#ff6f91;
+  font-weight:600;
+  cursor:pointer;
+}
+canvas{
+  position:fixed;
+  inset:0;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="fireworks"></canvas>
+
+<div class="card">
+  <div class="photo"></div>
+  <h1 id="title">🎉 Happy Birthday Shayaan Aunty 🎂</h1>
+  <div id="msg"></div>
+
+  <!-- 🔊 TAP TO PLAY BUTTON -->
+  <button class="play-btn" onclick="playMusic()">Click this Button</button>
+</div>
+
+<!-- 🎵 AUDIO FILE -->
+<audio id="song" loop>
+  <source src="birthday.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+/* TYPING MESSAGE */
+let text="May your life be full of success ✨\nHappiness 💖 & cake 🎂\nFrom: Khurram";
+let i=0;
+(function type(){
+  if(i<text.length){
+    msg.innerHTML+=text[i]==="\n"?"<br>":text[i];
+    i++; setTimeout(type,40);
+  }
+})();
+
+/* PLAY MUSIC FUNCTION (FIX) */
+function playMusic(){
+  const song = document.getElementById("song");
+  song.play();
+}
+
+/* FIREWORKS */
+const canvas=document.getElementById("fireworks");
+const ctx=canvas.getContext("2d");
+
+function resize(){
+  canvas.width=innerWidth;
+  canvas.height=innerHeight;
+}
+resize();
+addEventListener("resize",resize);
+
+let particles=[];
+function firework(){
+  let x=Math.random()*canvas.width;
+  let y=Math.random()*canvas.height/2;
+  let color=`hsl(${Math.random()*360},100%,60%)`;
+  for(let i=0;i<90;i++){
+    particles.push({
+      x,y,
+      dx:(Math.random()-0.5)*7,
+      dy:(Math.random()-0.5)*7,
+      life:100,
+      color
+    });
+  }
+}
+
+function animate(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  particles.forEach((p,i)=>{
+    p.x+=p.dx;
+    p.y+=p.dy;
+    p.life--;
+    ctx.fillStyle=p.color;
+    ctx.fillRect(p.x,p.y,3,3);
+    if(p.life<=0) particles.splice(i,1);
+  });
+  requestAnimationFrame(animate);
+}
+animate();
+
+/* AUTO FIREWORKS */
+firework();
+setInterval(firework,90);
+</script>
+
+</body>
+</html>
